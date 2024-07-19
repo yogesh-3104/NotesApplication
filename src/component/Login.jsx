@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import {useNavigate} from 'react-router-dom'
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate=useNavigate ();
   const handleLogin = async (e) => {
     try {
       e.preventDefault();
@@ -11,21 +12,18 @@ const Login = () => {
         email,
         password,
       });
-      console.log("Login success:", response);
+      if(response){
+        
+        console.log("Login success:", response);
+        localStorage.setItem("NoteUser", JSON.stringify(response.data.token));
+        navigate('/');
+      }
+      
     } catch (error) {
       console.error("Login error:", error.response.data);
     }
   };
-  const googleAuth = () => {
-    console.log("hello");
-     window.location.href = "http://localhost:8080/auth/google";
-    // window.open(`http://localhost:8080/auth/google/callback`, "_self");
-  };
-  const logoutHandler=async()=>{
-    console.log("logout")
-    window.open(`http://localhost:8080/auth/logout`,"_self");
-    // await axios.get("http://localhost:8080/auth/logout");
-  }
+ 
   return (
     <div className="container">
       <form className="login-form" onSubmit={handleLogin}>
@@ -50,15 +48,17 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="form-group checkbox">
+        {/* <div className="form-group checkbox">
           <input type="checkbox" id="remember_me" />
           <label htmlFor="remember_me">Remember Me</label>
-        </div>
-        <button type="button">Login</button>
+        </div> */}
+        <button type="submit">Login</button>
       </form>
-        <p>OR</p>
-        <button onClick={googleAuth}>Sign in with Google</button>
-        <button onClick={logoutHandler}>logout</button>
+      <div>
+        <span>
+          Create an account?<a href="/signup">Signup</a>
+        </span>
+      </div>
       <p className="footer-text">&copy;2024 Acme Corp. All rights reserved.</p>
     </div>
   );
